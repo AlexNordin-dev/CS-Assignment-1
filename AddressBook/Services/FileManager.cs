@@ -24,7 +24,7 @@ namespace AddressBook.Services
             catch
             {
                 Console.Clear();
-                Console.WriteLine("Unable to save the product catalog");
+                Console.WriteLine("Unable to save ");
                 Console.ReadKey();
             }
         }

@@ -14,20 +14,25 @@ using System.Threading.Tasks;
  *  ------------------------------------------------------------------
  *  TOC:
  *  01. IMenuManager => är ett interface. Här står ett antal krav för ett antal metoder som klassen MenuManager behöver implementera.
- *  02. MenuManager:IMenuManager => är en klass. Alla metoder och funktioner i nedan ligger inom den här klass.
+ *  02. MenuManager:IMenuManager => är en klass. Alla metoder och funktioner i nedan ligger inom den här klass.  Här ligger också sökvägen till filen. 
  *  03. MainMenu => är en metod.visar och hanterar huvudmenyn.
- *  04. ListAllContacts => är en metod.
- *  05. AddContact => är en metod.
- *  06. SearchForContact  => är en metod.
- *  07. ContactDetails => är en metod.
- *  08. UpdateContact => är en metod.
- *  09. DeleteContact => är en metod.
+ *  04. ListAllContacts => är en metod. Ska visa och lista upp alla kontakter som finns i listan.
+ *  05. AddContact => är en metod. Den här funktionen möjliggör att du kunna lägga till en ny kontaktperson.
+ *  06. SearchForContact  => är en metod. Den här funktionen möjliggör att du kunna söka efter en kontaktperson.
+ *  07. ContactDetails => är en metod.Den här funktionen möjliggör att du kunna se detaljerad information om en specifik kontaktperson.
+ *  08. UpdateContact => är en metod. Den här funktionen möjliggör att du kunna uppdatera en kontaktperson med hjälp av en Guid ID.
+ *  09. DeleteContact => är en metod. Den här funktionen möjliggör att du kunna Radera en kontaktperson med hjälp av en Guid ID.
  *
  * =================================================================== 
  */
 namespace AddressBook.Services
 {
-    internal interface IMenuManager        
+    /** 
+    * ===================================================================
+    *                    01.  Här står ett antal krav 
+    * ------------------------------------------------------------------- 
+    */
+    internal interface IMenuManager
     {
         // Här står ett antal krav för ett antal metoder som klassen IMenuManager behöver genomföra.
         public void MainMenu();
@@ -38,14 +43,27 @@ namespace AddressBook.Services
         public void UpdateContact(Contact contact);
         public void DeleteContact(Guid id);
     }
-    internal class MenuManager : IMenuManager 
+    internal class MenuManager : IMenuManager
     {
+        /** 
+        * ===================================================================
+        *        02. Här ligger också sökvägen till file och listor
+        * ------------------------------------------------------------------- 
+        */
         private List<Contact> _contacts = new();
         private IFileManager _fileManager = new FileManager();
+
 
         // Här är sökvägen till där filen ska sparas med namnet ContactPath.Json 
         private string _filePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\ContactPath.Json";
 
+
+
+        /** 
+        * ===================================================================
+        *                       03. Huvudmenyn
+        * ------------------------------------------------------------------- 
+        */
         public void MainMenu()
         {
             _contacts = JsonConvert.DeserializeObject<List<Contact>>(_fileManager.Read(_filePath))!;
@@ -93,7 +111,11 @@ namespace AddressBook.Services
             }
         }
 
-
+        /** 
+        * ===================================================================
+        *                  04. Visa alla kontakter
+        * ------------------------------------------------------------------- 
+        */
 
         public void ListAllContacts()
         {
@@ -149,7 +171,11 @@ namespace AddressBook.Services
         }
 
 
-
+        /** 
+        * ===================================================================
+        *             05. Lägga till en ny kontaktperson.
+        * ------------------------------------------------------------------- 
+        */
         public void AddContact()
         {
             Contact contact = new Contact();
@@ -185,7 +211,11 @@ namespace AddressBook.Services
             Console.Write("Press Enter to continue: ");
         }
 
-
+        /** 
+        * ===================================================================
+        *                 06. Sök efter en kontaktperson
+        * ------------------------------------------------------------------- 
+        */
         public void SearchForContact()
         {
             Console.Clear();
@@ -231,7 +261,11 @@ namespace AddressBook.Services
             }
         }
 
-
+        /** 
+        * ===================================================================
+        *      07. Visa detaljerad info om en specifik kontaktperson.
+        * ------------------------------------------------------------------- 
+        */
         public void ContactDetails(Guid id)
         {
             var contact = _contacts.FirstOrDefault(x => x.Id == id);
@@ -270,6 +304,11 @@ namespace AddressBook.Services
             }
         }
 
+        /** 
+        * ===================================================================
+        *                   08. Uppdatera en kontaktperson
+        * ------------------------------------------------------------------- 
+        */
         public void UpdateContact(Contact contact)
         {
             var index = _contacts.IndexOf(contact);
@@ -310,6 +349,12 @@ namespace AddressBook.Services
             Console.Write("\nDone. ");
             _fileManager.Save(_filePath, JsonConvert.SerializeObject(_contacts, Formatting.Indented));
         }
+
+        /** 
+        * ===================================================================
+        *                  09. Radera en kontaktperson 
+        * ------------------------------------------------------------------- 
+        */
         public void DeleteContact(Guid id)
         {
             _contacts = _contacts.Where(x => x.Id != id).ToList();
